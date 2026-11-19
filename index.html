@@ -103,10 +103,7 @@ input:focus{outline:0;border-color:#6366f1;box-shadow:0 0 0 3px #e0e7ff}
 <div class="hero"><div class="ic">🧭</div><h1>Tes Minat dan Orientasi Karier</h1><p>Kenali minatmu, temukan arah kariermu</p><div class="chips"><span>48 pernyataan</span><span>sekitar 10 menit</span><span>hasil berupa PDF</span></div></div>
 <p>Untuk siswa SMK Akuntansi. Ada 48 pernyataan. Pilih angka yang menggambarkan seberapa besar kamu tertarik melakukan aktivitas tersebut. Jawablah berdasarkan ketertarikan pribadi, bukan karena kemampuan, tuntutan jurusan, atau keinginan orang lain.</p>
 <p>1 = Sangat tidak tertarik, 2 = Tidak tertarik, 3 = Cukup tertarik, 4 = Tertarik, 5 = Sangat tertarik</p>
-<div class="nmbox" id="nmbox"><label for="nm">Nama lengkap <span>* wajib diisi</span></label><input id="nm" placeholder="Ketik namamu di sini" autocomplete="name"><div class="nmerr">Nama belum diisi. Isi dulu ya.</div></div>
-<div class="nmbox" id="kelasbox"><label for="kelas">Kelas <span>* wajib diisi</span></label><input id="kelas" placeholder="Contoh: XII AK" autocomplete="off"><div class="nmerr">Kelas belum diisi.</div></div>
-<div class="nmbox" id="jurbox"><label for="jurusan">Kompetensi keahlian <span>* wajib diisi</span></label><select id="jurusan" style="width:100%;padding:14px;border:1.5px solid #e0e7ff;border-radius:12px;font:inherit;background:#fff;color:#111"><option value="">Pilih kompetensi keahlian</option><option>Akuntansi dan Keuangan Lembaga</option><option>Teknik Otomotif</option><option>Teknik Jaringan Komputer dan Telekomunikasi</option><option>Desain Komunikasi Visual</option><option>Lainnya</option></select><div class="nmerr">Kompetensi keahlian belum dipilih.</div></div>
-<p style="font-size:.78rem">Jawaban diproses di perangkat ini. Laporan PDF akan memuat ringkasan skor dan seluruh 48 jawaban agar dapat diperiksa kembali oleh guru.</p>
+<div class="nmbox" id="nmbox"><label for="nm">Nama lengkap <span>* wajib diisi</span></label><input id="nm" placeholder="Ketik namamu di sini" autocomplete="off"><div class="nmerr">Nama belum diisi. Isi dulu ya.</div></div>
 
 <div class="bar"><span id="cnt">0 dari 48 terjawab</span><i><b id="pb"></b></i></div>
 <div id="qs"></div>
@@ -115,6 +112,7 @@ input:focus{outline:0;border-color:#6366f1;box-shadow:0 0 0 3px #e0e7ff}
 <h2>Kode minatmu</h2><div class="code" id="cd"></div><div id="chips"></div>
 <p id="sm"></p><div id="bars"></div>
 <button class="b" id="dl">Unduh laporan PDF</button>
+<button class="b o" id="dt">Unduh laporan TXT (cadangan)</button>
 <button class="b o" id="rs">Ulangi tes</button>
 <div id="msg"></div>
 </div>
@@ -143,30 +141,13 @@ A:{j:["Akuntansi di agensi, studio, atau usaha kreatif","Penyajian laporan keuan
 S:{j:["Teller atau layanan pelanggan di bank dan koperasi","Pendamping pembukuan UMKM dan pelatihan literasi keuangan","Staf keuangan di rumah sakit, sekolah, atau lembaga sosial"],g:["Jadi tutor sebaya pelajaran akuntansi","Bantu pembukuan koperasi atau UMKM lewat kegiatan sekolah","Latihan komunikasi dan pelayanan prima"]},
 E:{j:["Membuka jasa pembukuan untuk UMKM atau usaha sendiri","Perencana keuangan, analis bisnis, atau sales produk keuangan","Akuntansi manajemen: anggaran, harga pokok, dan strategi usaha"],g:["Jadi pengurus koperasi sekolah atau unit produksi","Ikut lomba wirausaha atau business plan","Mulai jasa pembukuan kecil-kecilan untuk UMKM"]},
 C:{j:["Staf akuntansi, pembukuan, dan penagihan","Staf perpajakan dan administrasi keuangan","Staf operasional bank atau koperasi"],g:["Latihan Excel, aplikasi akuntansi, dan perpajakan dasar","Ikut LKS Akuntansi","Sertifikasi BNSP akuntansi dan jadi bendahara organisasi"]}};
-var LB={R:"Teknisi dan Praktisi",I:"Penyelidik dan Analis",A:"Kreator",S:"Penolong dan Pembimbing",E:"Pemimpin dan Pebisnis",C:"Perapi dan Pengatur"};
-var KW={R:"praktis dan bekerja dengan alat atau benda nyata",I:"menganalisis dan memecahkan masalah",A:"kreatif dan berkarya",S:"membantu dan mendampingi orang",E:"memimpin dan mengambil inisiatif",C:"teliti, rapi, dan terstruktur"};
-function lv(d){return d>=.4?"Relatif lebih menonjol":d>=.15?"Cenderung menonjol":d>-.15?"Dekat rata-rata profil":d>-.4?"Relatif kurang menonjol":"Paling rendah dalam profil"}
-function analyze(){
- var r="RIASEC".split("").map(function(k){
-  var o={k:k,s:0,n5:0,n4:0,id:[]};
-  Q.forEach(function(q,i){if(q[0]===k){var v=ans[i];o.s+=v;if(v===5)o.n5++;if(v===4)o.n4++;o.id.push(i)}});
-  return o;
- });
- var total=r.reduce(function(a,o){return a+o.s},0),m=total/48;
- r.forEach(function(o){o.mean=o.s/8;o.d=o.mean-m;o.lv=lv(o.d)});
- r.sort(function(a,b){return b.s-a.s});
- var top=r.slice(0,3),cut=top[2].s,boundary=r.filter(function(o){return o.s===cut});
- var fav=Q.map(function(q,i){return {i:i,v:ans[i],k:q[0]}})
-  .sort(function(a,b){return b.v-a.v||"RIASEC".indexOf(a.k)-"RIASEC".indexOf(b.k)||a.i-b.i}).slice(0,6).map(function(o){return o.i});
- var low=Q.map(function(q,i){return {i:i,v:ans[i],k:q[0]}})
-  .filter(function(o){return o.v<=2}).sort(function(a,b){return a.v-b.v||a.i-b.i}).slice(0,4).map(function(o){return o.i});
- var code=top.map(function(o){return o.k}).join(""),spread=r[0].s-r[5].s;
- var text="Tiga skor tertinggi pada jawabanmu adalah "+top.map(function(o){return LB[o.k]+" ("+o.k+")"}).join(", ")+".";
- var clar=spread>=14?"Ada jarak skor yang cukup terlihat antara bidang tertinggi dan terendah dalam profilmu.":spread>=8?"Ada beberapa kecenderungan yang terlihat, tetapi perbedaan antarbidang tidak terlalu jauh.":"Skor keenam bidang relatif berdekatan; kamu mungkin tertarik pada beberapa jenis aktivitas sekaligus.";
- return {r:r,m:m,top:top,fav:fav,low:low,tie:boundary.length>1,code:code,text:text,clar:clar,spread:spread};
-}
-function cap(t){return t.charAt(0).toUpperCase()+t.slice(1)}
 var an;
+function analyze(){var thr=rank[2].s,ab=rank.filter(function(x){return x.s>thr}),ti=rank.filter(function(x){return x.s==thr}),top=ab.concat(ti),amb=top.length>3;
+var L=function(a){return a.map(function(x){return x.k})},nm=function(a){return a.map(function(x){return N[x.k].split(" (")[0]})};
+var code=L(ab).join("")+(amb?(ab.length?" ":"")+"("+L(ti).join("/")+" berimbang)":L(ti).join(""));
+var text=amb?(ab.length?nm(ab).join(", ")+" paling menonjol, lalu "+nm(ti).join(", ")+" yang skornya berimbang.":"Beberapa kelompok skornya berimbang: "+nm(ti).join(", ")+"."):"Tiga kecenderungan teratas: "+nm(top).join(", ")+".";
+var sp=rank[0].s-rank[5].s,clar=sp>=14?"Profil minatmu cukup menonjol.":sp>=8?"Profil minatmu sedang: ada kecenderungan, tetapi tidak terlalu tajam.":"Profil minatmu datar: banyak bidang yang sama menariknya.";
+return{top:top,code:code,text:text,clar:clar}}
 var $=function(i){return document.getElementById(i)},ans={},ord=[],rank=[];
 function shuf(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
 function draw(){ord=shuf(Q.map(function(_,i){return i}));ans={};var h="";
@@ -177,107 +158,136 @@ $("qs").innerHTML=h;upd();$("res").style.display="none"}
 function upd(){var n=Object.keys(ans).length;$("cnt").textContent=($("nm").value.trim()?$("nm").value.trim()+": ":"")+n+" dari 48 terjawab"+(n==48?" - selesai, tekan Lihat hasil":n>=24?" - sudah separuh jalan":"");$("pb").style.width=(n/48*100)+"%"}
 $("qs").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;var id=b.dataset.q;ans[id]=+b.dataset.v;
 [].forEach.call(b.parentNode.children,function(x){x.classList.toggle("on",x===b)});$("q"+id).classList.remove("bad");$("q"+id).classList.add("done");upd()});
-$("sub").onclick=function(){
- var fields=[["nm","nmbox"],["kelas","kelasbox"],["jurusan","jurbox"]],bad=null;
- fields.forEach(function(x){var el=$(x[0]),box=$(x[1]),ok=!!el.value.trim();box.classList.toggle("err",!ok);if(!ok&&!bad)bad=el;});
- if(bad){bad.focus();bad.scrollIntoView({block:"center"});$("cnt").textContent="Lengkapi identitas siswa terlebih dahulu";return}
- var miss=ord.filter(function(i){return !ans[i]});
+$("sub").onclick=function(){if(!$("nm").value.trim()){$("nmbox").classList.add("err");$("nm").focus();$("nm").scrollIntoView({block:"center"});$("cnt").textContent="Isi nama dulu";return}var miss=ord.filter(function(i){return !ans[i]});
 if(miss.length){miss.forEach(function(i){$("q"+i).classList.add("bad")});$("q"+miss[0]).scrollIntoView({behavior:"smooth",block:"center"});$("cnt").textContent="Masih "+miss.length+" soal belum dijawab";return}
 var s={R:0,I:0,A:0,S:0,E:0,C:0};Q.forEach(function(q,i){s[q[0]]+=ans[i]});
 rank=Object.keys(s).map(function(k){return{k:k,s:s[k],p:Math.round((s[k]-8)/32*100)}}).sort(function(a,b){return b.s-a.s});an=analyze();
 $("cd").textContent=an.code;var CL={R:"#ea580c",I:"#2563eb",A:"#db2777",S:"#16a34a",E:"#7c3aed",C:"#0891b2"};$("chips").innerHTML=an.top.map(function(o,i){return '<span class="rc" style="background:'+CL[o.k]+'">'+(i+1)+'. '+LB[o.k]+'</span>'}).join("");$("bars").innerHTML=an.r.map(function(x){return '<div class="rb"><span>'+LB[x.k]+'<br><em>'+x.lv+'</em></span><i><u style="width:'+(x.s/40*100)+'%;background:'+CL[x.k]+'"></u></i><b>'+x.s+'</b></div>'}).join("");
-$("sm").textContent=an.text+" "+an.clar+" Skor menggambarkan ketertarikan yang kamu laporkan, bukan ukuran kemampuan atau bakat.";
+$("sm").textContent=an.text+" "+an.clar+" Unduh laporan lengkap untuk saran di bidang Akuntansi.";
 $("res").style.display="block";$("msg").textContent="";$("res").scrollIntoView({behavior:"smooth"})};
 $("rs").onclick=function(){draw();window.scrollTo(0,0)};
-["nm","kelas","jurusan"].forEach(function(id){$(id).addEventListener("input",function(){var box=$(id==="nm"?"nmbox":id==="kelas"?"kelasbox":"jurbox"),v=!!this.value.trim();box.classList.toggle("ok",v);if(v)box.classList.remove("err");upd()});$(id).addEventListener("change",function(){var box=$(id==="jurusan"?"jurbox":id==="kelas"?"kelasbox":"nmbox");if(this.value.trim())box.classList.remove("err")})});
+$("nm").addEventListener("input",function(){var v=this.value.trim()!=="",b=$("nmbox");b.classList.toggle("ok",v);if(v)b.classList.remove("err");upd()});
 function pdf(){
- var J=window.jspdf.jsPDF,d=new J({unit:"mm",format:"a4"}),M=17,W=176,y=20;
- var nm=$("nm").value.trim(),kelas=$("kelas").value.trim(),jur=$("jurusan").value;
- var tg=new Date().toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
- var A=an,top=A.top,colors={R:[234,88,12],I:[37,99,235],A:[219,39,119],S:[22,163,74],E:[124,58,237],C:[8,145,178]};
- function page(h){if(y+h>278){d.addPage();y=20;return true}return false}
- function text(t,size,bold,gap,color){
-  d.setFont("helvetica",bold?"bold":"normal");d.setFontSize(size||10);d.setTextColor.apply(d,color||[35,41,55]);
-  var lines=d.splitTextToSize(String(t),W);
-  lines.forEach(function(line){page(6);d.text(line,M,y);y+=Math.max(4.2,(size||10)*.43)});
-  y+=gap===undefined?2:gap;
- }
- function heading(t){page(13);y+=2;d.setFillColor(238,241,252);d.roundedRect(M,y-5,W,9,1.5,1.5,"F");d.setFillColor(49,46,129);d.rect(M,y-5,1.5,9,"F");d.setFont("helvetica","bold");d.setFontSize(11.5);d.setTextColor(49,46,129);d.text(t,M+4,y+1);y+=9}
- function bullets(arr){arr.forEach(function(v){var lines=d.splitTextToSize(String(v),W-6);page(lines.length*5+1);d.setFont("helvetica","normal");d.setFontSize(9.5);d.setTextColor(35,41,55);d.text("-",M+1,y);lines.forEach(function(line,i){d.text(line,M+6,y);y+=4.7})});y+=2}
- function label(k){return LB[k]+" ("+k+")"}
- function activity(i){return cap(Q[i][1])+" ["+Q[i][0]+"]"}
- function footer(){
-  var n=d.getNumberOfPages();
-  for(var p=1;p<=n;p++){d.setPage(p);d.setFont("helvetica","normal");d.setFontSize(8);d.setTextColor(130,130,145);d.text("Tes Minat dan Orientasi Karier SMK | "+nm,M,289);d.text("Halaman "+p+" dari "+n,210-M-25,289)}
- }
- // Cover and identity
- d.setFillColor(31,58,138);d.rect(0,0,210,43,"F");
- d.setFont("helvetica","bold");d.setFontSize(16);d.setTextColor(255,255,255);d.text("LAPORAN TES MINAT",M,18);d.text("DAN ORIENTASI KARIER",M,26);
- d.setFont("helvetica","normal");d.setFontSize(9.5);d.setTextColor(220,225,255);d.text("Pemetaan kecenderungan minat berdasarkan pendekatan Holland RIASEC",M,35);
- y=54;text("IDENTITAS SISWA",11,true,4,[49,46,129]);
- text("Nama lengkap : "+nm,10,false,1);text("Kelas : "+kelas,10,false,1);text("Kompetensi keahlian : "+jur,10,false,1);text("Tanggal pengerjaan : "+tg,10,false,4);
- heading("1. Ringkasan profil minat");
- text(A.text,11,true,2);
- text(A.clar,10,false,2);
- text("Kode tiga skor tertinggi: "+A.code+" ("+top.map(function(o){return LB[o.k]}).join(" – ")+")",10,true,2,[49,46,129]);
- text("Rata-rata seluruh jawaban: "+A.m.toFixed(2)+" dari 5. Skor setiap bidang merupakan jumlah 8 jawaban, dengan rentang 8–40.",9.5,false,3);
- if(A.tie) text("Catatan peringkat: terdapat skor sama pada batas tiga besar. Bidang yang memiliki skor sama sebaiknya dipandang berimbang; urutan tampil bukan bukti bahwa satu bidang lebih kuat.",9.5,false,3,[120,70,30]);
- heading("2. Peta enam bidang minat");
- A.r.forEach(function(o){
-  page(9);d.setFont("helvetica","normal");d.setFontSize(9);d.setTextColor(35,41,55);d.text(label(o.k),M,y+3.5);
-  d.setFillColor(230,232,240);d.roundedRect(M+58,y,75,5,1,1,"F");
-  d.setFillColor.apply(d,colors[o.k]);d.roundedRect(M+58,y,75*o.s/40,5,1,1,"F");
-  d.text(o.s+"/40",M+138,y+3.5);d.setFontSize(7.5);d.setTextColor(100,105,120);d.text(o.lv,M+151,y+3.5);y+=9;
- });
- text("Label relatif membandingkan skor bidang dengan rata-rata jawaban siswa sendiri. Label ini bersifat deskriptif untuk profil ini, bukan norma populasi atau hasil diagnosis.",8.5,false,3,[100,100,110]);
- heading("3. Aktivitas yang paling menarik");
- bullets(A.fav.map(activity));
- text("Aktivitas dengan nilai rendah (skor 1 atau 2)",10,true,1);
- bullets(A.low.length?A.low.map(activity):["Tidak ada aktivitas yang diberi nilai 1 atau 2."]);
- heading("4. Tiga bidang dengan skor tertinggi");
- top.forEach(function(o,i){
-  var info=D[o.k],ak=G[o.k];
-  page(28);text((i+1)+". "+label(o.k)+" — "+o.s+"/40",11,true,2,colors[o.k]);
-  text(info.d,9.5,false,2);
-  text("Bukti dari jawabanmu: "+o.n5+" dari 8 aktivitas diberi nilai 5 dan "+o.n4+" aktivitas diberi nilai 4.",9,false,2);
-  var best=o.id.slice().sort(function(a,b){return ans[b]-ans[a]}).slice(0,3);
-  text("Contoh aktivitas yang paling kamu minati pada bidang ini:",9.5,true,1);bullets(best.map(activity));
-  text("Contoh arah karier di bidang Akuntansi/keuangan:",9.5,true,1);bullets(ak.j);
-  text("Contoh karier lintas bidang:",9.5,true,1);bullets(info.k);
-  text("Kegiatan pengembangan:",9.5,true,1);bullets(ak.g.concat(info.g.slice(0,2)));
- });
- heading("5. Perpaduan dua minat teratas");
- var a=top[0].k,b=top[1].k;
- text("Kombinasi "+label(a)+" dan "+label(b)+" menunjukkan dua kelompok aktivitas yang sama-sama menarik bagimu. Kamu dapat mengeksplorasi pekerjaan yang memadukan "+KW[a]+" dengan "+KW[b]+".",9.5,false,2);
- text("Contoh arah dari bidang pertama: "+G[a].j[0]+". Contoh arah dari bidang kedua: "+G[b].j[0]+". Ini merupakan bahan eksplorasi, bukan penetapan bahwa kamu pasti cocok pada pekerjaan tersebut.",9.5,false,3);
- heading("6. Hubungan dengan kompetensi Akuntansi dan Keuangan");
- var akCount=top.filter(function(o){return "CEI".indexOf(o.k)>=0}).length;
- text(akCount===3?"Ketiga skor teratasmu termasuk C, E, atau I, yang memiliki kaitan dengan sejumlah aktivitas administrasi, bisnis, dan analisis keuangan.":akCount===2?"Dua dari tiga skor teratasmu memiliki kaitan dengan aktivitas administrasi, bisnis, atau analisis keuangan.":"Hasil ini tidak menunjukkan bahwa minatmu hanya berada pada aktivitas Akuntansi. Kamu tetap dapat mengeksplorasi bidang lain, sekaligus mencari sisi pekerjaan keuangan yang sesuai dengan aktivitas yang kamu sukai.",9.5,false,3);
- bullets(["Coba hubungkan hasil ini dengan pengalaman belajar, praktik, dan PKL yang benar-benar kamu nikmati.","Bandingkan minat dengan keterampilan, nilai praktik, pengalaman, dan informasi persyaratan pekerjaan.","Untuk profesi tertentu, pendidikan lanjutan, sertifikasi, atau izin profesi mungkin diperlukan."]);
- heading("7. Rencana pengembangan diri");
- bullets(["Minggu ini: pilih satu aktivitas dari daftar favorit dan coba lakukan secara nyata.","Bulan ini: pelajari satu keterampilan yang mendukung bidang minat teratasmu.","Saat PKL: catat tugas yang terasa menarik, menantang, atau kurang kamu sukai.","Diskusikan hasil ini dengan guru BK atau guru produktif untuk menentukan langkah yang realistis."]);
- text("Pertanyaan refleksi",10,true,1);
- bullets(["Aktivitas mana yang pernah kamu lakukan dan benar-benar membuatmu bersemangat?","Apakah pilihanmu berubah ketika kamu sudah mencoba aktivitas tersebut secara langsung?","Keterampilan apa yang ingin kamu kembangkan dalam tiga bulan ke depan?"]);
- heading("8. Lampiran jawaban 48 pernyataan");
- text("Daftar berikut memuat jawaban asli agar guru dapat memeriksa kembali dasar skor. Nomor mengikuti urutan pengerjaan siswa.",8.5,false,2);
- ord.forEach(function(id,n){
-  var q=Q[id],line=(n+1)+". ["+q[0]+"] "+q[1]+" — skor "+ans[id];
-  var lines=d.splitTextToSize(line,W-2);page(lines.length*4.2+1);
-  d.setFont("helvetica","normal");d.setFontSize(8.2);d.setTextColor(45,50,65);
-  lines.forEach(function(l){d.text(l,M+1,y);y+=4.1});
- });
- heading("9. Catatan penggunaan hasil");
- text("Laporan ini menggambarkan ketertarikan yang kamu nyatakan pada saat mengerjakan tes. Minat bukan ukuran kemampuan, bakat, prestasi, atau jaminan keberhasilan pada pekerjaan tertentu. Hasil ini merupakan bahan refleksi dan percakapan bimbingan karier, bukan tes psikologis terstandar atau diagnosis. Kecenderungan dapat berkembang seiring pengalaman.",9,false,2,[85,85,95]);
- text("Metode: 48 pernyataan, enam kelompok RIASEC, masing-masing 8 pernyataan. Skor per kelompok 8–40. Interpretasi relatif dalam laporan ini bersifat deskriptif dan belum boleh diperlakukan sebagai norma psikometrik tervalidasi.",8.5,false,2,[85,85,95]);
- footer();
- return d.output("arraybuffer");
-}
+var J=window.jspdf.jsPDF,d=new J({unit:"mm",format:"a4"}),M=18,W=210-2*M,y=M;
+function pg(h){if(y+h>285){d.addPage();y=M}}
+function T(t,sz,b,gap,c){d.setFont("helvetica",b?"bold":"normal");d.setFontSize(sz);d.setTextColor.apply(d,c||[20,20,20]);
+d.splitTextToSize(t,W).forEach(function(l){pg(sz*.5);d.text(l,M,y);y+=sz*.46});y+=gap||2}
+function Li(a){a.forEach(function(t){d.setFont("helvetica","normal");d.setFontSize(10.5);d.setTextColor(20,20,20);
+d.splitTextToSize(t,W-6).forEach(function(l,i){pg(6);if(i==0)d.text("-",M+1,y);d.text(l,M+6,y);y+=5})});y+=3}
+function H(t,k){pg(k||14);y+=3;d.setDrawColor(31,58,138);d.setLineWidth(.4);d.line(M,y-4,M+W,y-4);T(t,13,1,2,[31,58,138])}
+var nm=$("nm").value.trim();
+var tg=new Date().toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"}).replace(/[^\x20-\x7E]/g,"");
+T("LAPORAN TES MINAT DAN ORIENTASI KARIER",17,1,3,[31,58,138]);
+T("Pendekatan teori minat karier Holland (RIASEC) untuk siswa SMK",10.5,0,5,[100,100,100]);
+T("Nama      : "+nm,11,0,1);T("Jurusan   : Akuntansi",11,0,1);T("Tanggal  : "+tg,11,0,4);
+var code=an.code;
+H("Kode minat: "+code);
+T(an.text+" "+an.clar+" Kode ini menggambarkan jenis aktivitas dan lingkungan kerja yang paling menarik bagimu.",10.5,0,3);
+H("Profil minat (skor 8 sampai 40)");
+rank.forEach(function(x){pg(9);d.setFont("helvetica","normal");d.setFontSize(10);d.setTextColor(20,20,20);d.text(N[x.k].split(" (")[0]+" ("+x.k+")",M,y+3.5);
+d.setFillColor(230,232,240);d.rect(M+52,y,90,5,"F");d.setFillColor(31,58,138);d.rect(M+52,y,Math.max(.5,90*x.p/100),5,"F");d.text(x.s+" / 40",M+146,y+3.5);y+=9});
+an.top.slice(0,4).forEach(function(x,i){var o=D[x.k],g=G[x.k];H((i+1)+". "+N[x.k],55);T(o.d,10.5,0,3);
+T("Arah di bidang Akuntansi",10.5,1,1);Li(g.j);
+T("Profesi lain yang selaras dengan minat ini (di luar akuntansi)",10.5,1,1);Li(o.k);
+T("Saran kegiatan pengembangan",10.5,1,1);Li(g.g)});
+H("Saran umum dan tindak lanjut");
+Li(["Gabungkan hasil ini dengan nilai praktik, hasil PKL, dan masukan guru produktif atau guru BK. Minat belum tentu sama dengan kemampuan.",
+"Setelah lulus ada beberapa jalur: bekerja di dunia usaha dan industri, kuliah vokasi (D3 atau D4) atau S1, berwirausaha, atau menggabungkan kerja sambil kuliah.",
+"Manfaatkan PKL untuk mencoba pekerjaan nyata di bidang yang sesuai dengan kode minatmu, lalu catat mana yang paling kamu nikmati.",
+"Kumpulkan sertifikat kompetensi (BNSP) dan portofolio karya agar lebih siap saat melamar kerja atau kuliah.",
+"Akuntansi punya banyak sisi pekerjaan: pembukuan, perpajakan, analisis, perbankan, dan wirausaha. Pilih sisi yang paling dekat dengan minatmu."]);
+H("Catatan");
+T("Laporan ini hanya menggambarkan kecenderungan minat berdasarkan jawaban saat tes dan bukan vonis bakat atau penentu masa depan. Hasil dapat berubah seiring pengalaman. Jawaban tidak disimpan atau dikirim ke mana pun.",10,0,2,[90,90,90]);
+var n=d.getNumberOfPages();for(var p=1;p<=n;p++){d.setPage(p);d.setFontSize(8.5);d.setTextColor(130,130,130);d.text("Tes Minat dan Orientasi Karier SMK - "+nm,M,291);d.text("Hal. "+p+" / "+n,210-M-16,291)}
+return d.output("arraybuffer")}
+var LB={R:"Teknisi dan Praktisi",I:"Penyelidik dan Analis",A:"Kreator",S:"Penolong dan Pembimbing",E:"Pemimpin dan Pebisnis",C:"Perapi dan Pengatur"};
+var KW={R:"praktis dan bekerja dengan alat atau benda nyata",I:"menganalisis dan memecahkan masalah",A:"kreatif dan berkarya",S:"membantu dan mendampingi orang",E:"memimpin dan mengambil inisiatif",C:"teliti, rapi, dan terstruktur"};
+function lv(d){return d>=.4?"Sangat menonjol":d>=.15?"Menonjol":d>-.15?"Sedang":d>-.4?"Di bawah rata-rata":"Rendah"}
+function analyze(){var tot=0,r="RIASEC".split("").map(function(k){var o={k:k,s:0,n5:0,n4:0,id:[]};Q.forEach(function(q,i){if(q[0]==k){var v=ans[i];o.s+=v;if(v==5)o.n5++;if(v==4)o.n4++;o.id.push(i)}});tot+=o.s;return o});
+var m=tot/48;r.forEach(function(o){o.d=o.s/8-m;o.lv=lv(o.d)});
+r.sort(function(a,b){return b.s-a.s||b.n5-a.n5||b.n4-a.n4});
+var top=r.slice(0,3),pos={};r.forEach(function(o,i){pos[o.k]=i});
+var all=Q.map(function(_,i){return i});
+var fav=all.slice().sort(function(a,b){return ans[b]-ans[a]||pos[Q[a][0]]-pos[Q[b][0]]}).slice(0,6);
+var low=all.filter(function(i){return ans[i]<=2}).sort(function(a,b){return ans[a]-ans[b]||pos[Q[b][0]]-pos[Q[a][0]]}).slice(0,4);
+return{r:r,m:m,top:top,fav:fav,low:low,tie:r[2].s==r[3].s,code:top.map(function(o){return o.k}).join(""),text:"Kamu paling dekat dengan tipe "+LB[top[0].k]+", disusul "+LB[top[1].k]+" dan "+LB[top[2].k]+".",clar:"Rata-rata jawabanmu "+m.toFixed(1)+" dari 5."}}
+function cap(t){return t.charAt(0).toUpperCase()+t.slice(1)}
+function pdf(){
+var J=window.jspdf.jsPDF,d=new J({unit:"mm",format:"a4"}),M=18,W=210-2*M,y=M;
+function pg(h){if(y+h>285){d.addPage();y=M}}
+function T(t,sz,b,gap,c){d.setFont("helvetica",b?"bold":"normal");d.setFontSize(sz);d.setTextColor.apply(d,c||[20,20,20]);d.splitTextToSize(t,W).forEach(function(l){pg(sz*.5);d.text(l,M,y);y+=sz*.46});y+=gap||2}
+function Li(a){a.forEach(function(t){d.setFont("helvetica","normal");d.setFontSize(10.5);d.setTextColor(20,20,20);d.splitTextToSize(t,W-6).forEach(function(l,i){pg(6);if(i==0)d.text("-",M+1,y);d.text(l,M+6,y);y+=5})});y+=3}
+function H(t,k){pg(k||14);y+=3;y+=1;d.setFillColor(238,241,252);d.rect(M,y-5.5,W,9,"F");d.setFillColor(31,58,138);d.rect(M,y-5.5,1.6,9,"F");d.setFont("helvetica","bold");d.setFontSize(12.5);d.setTextColor(31,58,138);d.text(t,M+4,y+.5);y+=8}
+var nm=$("nm").value.trim(),A=an,m=A.m,t=A.top,sp=A.r[0].s-A.r[5].s;
+var tg=new Date().toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"}).replace(/[^\x20-\x7E]/g,"");
+d.setFillColor(31,58,138);d.rect(0,0,210,38,"F");T("LAPORAN TES MINAT DAN ORIENTASI KARIER",16,1,2,[255,255,255]);T("Teori minat karier Holland (RIASEC) - siswa SMK Akuntansi",10.5,0,5,[199,210,254]);y=Math.max(y,48);
+T("Nama      : "+nm,11,0,1);T("Jurusan   : Akuntansi",11,0,1);T("Tanggal  : "+tg,11,0,4);
+H("1. Ringkasan: minatmu apa?");
+T(A.text,12,1,3);
+T("Kode minatmu: "+A.code+" ("+t.map(function(o){return LB[o.k]}).join(" - ")+")",10.5,0,3);
+T(m>=4?"Rata-rata jawabanmu "+m.toFixed(1)+" dari 5. Kamu tertarik pada banyak hal, jadi selisih antarbidang kecil. Karena itu laporan ini tidak hanya melihat skor, tetapi juga membandingkan bidangmu satu sama lain, melihat aktivitas yang kamu beri nilai 5, dan aktivitas yang kamu beri nilai rendah.":m>=3?"Rata-rata jawabanmu "+m.toFixed(1)+" dari 5. Kamu terbuka pada banyak bidang tetapi tetap punya pilihan. Laporan ini membandingkan bidangmu satu sama lain.":"Rata-rata jawabanmu "+m.toFixed(1)+" dari 5. Kamu cukup selektif: hanya sedikit bidang yang benar-benar menarik bagimu, sehingga bidang teratasmu cukup bisa diandalkan.",10.5,0,3);
+T(sp>=14?"Perbedaan antarbidangmu jelas, jadi arah minatmu mudah dibaca.":sp>=8?"Perbedaan antarbidangmu cukup terlihat.":"Perbedaan antarbidangmu kecil (multi-minat). Itu wajar di usia SMK, dan artinya kamu punya banyak pilihan.",10.5,0,3);
+if(A.tie)T("Catatan: skor peringkat 3 dan 4 sama ("+A.r[2].k+" dan "+A.r[3].k+"). Urutannya ditentukan dari banyaknya jawaban 5. Anggap keduanya sama kuat.",10,0,3,[90,90,90]);
+H("2. Peta minat 6 bidang");
+A.r.forEach(function(x){pg(9);d.setFont("helvetica","normal");d.setFontSize(9.5);d.setTextColor(20,20,20);d.text(LB[x.k]+" ("+x.k+")",M,y+3.5);d.setFillColor(230,232,240);d.rect(M+54,y,66,5,"F");d.setFillColor.apply(d,({R:[234,88,12],I:[37,99,235],A:[219,39,119],S:[22,163,74],E:[124,58,237],C:[8,145,178]})[x.k]);d.rect(M+54,y,66*x.s/40,5,"F");d.setFontSize(9);d.text(x.s+"/40  "+x.lv,M+123,y+3.5);y+=8.5});
+T("Tingkat dibandingkan dengan rata-rata jawabanmu sendiri: Sangat menonjol, Menonjol, Sedang, Di bawah rata-rata, Rendah.",9,0,3,[100,100,100]);
+H("3. Aktivitas yang paling kamu suka");
+Li(A.fav.map(function(i){return cap(Q[i][1])+" ("+LB[Q[i][0]]+")"}));
+T("Aktivitas yang kurang menarik bagimu",10.5,1,1);
+Li(A.low.length?A.low.map(function(i){return cap(Q[i][1])+" ("+LB[Q[i][0]]+")"}):["Tidak ada aktivitas yang kamu beri nilai rendah. Kamu terbuka pada hampir semua bidang."]);
+H("4. Tiga minat utamamu",60);
+t.forEach(function(x,i){var o=D[x.k],g=G[x.k];pg(55);T((i+1)+". "+LB[x.k]+" ("+x.k+") - "+x.lv,12,1,2,[31,58,138]);T(o.d,10.5,0,2);
+var f=x.id.slice().sort(function(a,b){return ans[b]-ans[a]}).slice(0,3).map(function(j){return cap(Q[j][1])});
+T("Mengapa muncul: "+x.n5+" dari 8 aktivitas di bidang ini kamu beri nilai 5. Skor bidangnya "+x.s+" dari 40.",10.5,0,2);
+T("Aktivitas favoritmu di bidang ini",10.5,1,1);Li(f);
+T("Arah di bidang Akuntansi",10.5,1,1);Li(g.j);
+T("Profesi lain yang selaras (di luar akuntansi)",10.5,1,1);Li(o.k);
+T("Saran kegiatan pengembangan",10.5,1,1);Li(g.g)});
+H("5. Perpaduan minat utamamu",40);
+var a=t[0].k,b=t[1].k,dist=Math.abs("RIASEC".indexOf(a)-"RIASEC".indexOf(b));dist=Math.min(dist,6-dist);
+T("Perpaduan "+LB[a]+" dan "+LB[b]+": kamu cocok pada pekerjaan yang menuntutmu "+KW[a]+", sekaligus "+KW[b]+".",10.5,0,2);
+T(dist==1?"Dua minat utamamu bersebelahan di peta Holland, jadi sangat selaras dan mudah digabung dalam satu pekerjaan.":dist==2?"Dua minat utamamu cukup selaras dan bisa digabung lewat pekerjaan yang tepat.":"Dua minat utamamu berjauhan di peta Holland. Itu bukan masalah, tetapi kamu perlu mencari pekerjaan yang menggabungkan keduanya, misalnya "+g0(a)+" yang dipadukan dengan "+g0(b)+".",10.5,0,3);
+function g0(k){return G[k].j[0].toLowerCase()}
+var n=t.filter(function(o){return "CEI".indexOf(o.k)>=0}).length;
+H("6. Kecocokan dengan bidang Akuntansi",40);
+T(n==3?"Sangat selaras. Ketiga minat utamamu (C, E, I) adalah pola yang umum pada pekerjaan akuntansi dan keuangan.":n==2?"Selaras. Dua dari tiga minat utamamu (C, E, I) adalah pola yang umum pada pekerjaan akuntansi dan keuangan.":n==1?"Sebagian selaras. Satu minat utamamu termasuk pola umum akuntansi (C, E, I). Cari sisi akuntansi yang paling dekat dengan minat utamamu, lihat bagian Arah di bidang Akuntansi di atas.":"Minat utamamu berada di luar pola yang umum di akuntansi (C, E, I). Itu tidak masalah. Akuntansi punya banyak sisi, dan bagian Arah di bidang Akuntansi di atas menunjukkan sisi yang paling dekat dengan minatmu.",10.5,0,3);
+H("7. Rencana langkahmu",50);
+Li(["Minggu ini: pilih satu kegiatan dan mulai, yaitu "+G[a].g[0].toLowerCase()+".","Bulan ini: coba satu hal dari bidang keduamu, yaitu "+G[b].g[0].toLowerCase()+".","Saat PKL: catat tugas yang membuatmu lupa waktu dan tugas yang membosankan. Itu petunjuk minatmu yang nyata.","Enam bulan lagi: ulangi tes ini dan bandingkan hasilnya."]);
+T("Tanyakan pada dirimu",10.5,1,1);
+Li(["Dari aktivitas favoritmu di atas, mana yang sudah pernah kamu lakukan, dan benar-benar menyenangkan?","Kalau tidak ada nilai dan tidak ada yang menilai, kegiatan apa yang akan kamu pilih?","Siapa orang yang pekerjaannya menarik bagimu, dan apa yang ia kerjakan setiap hari?"]);
+H("Catatan",30);
+T("Laporan ini menggambarkan kecenderungan minat berdasarkan jawabanmu hari ini. Ini bukan vonis bakat atau penentu masa depan, dan hasilnya bisa berubah seiring pengalaman. Diskusikan dengan guru BK, guru produktif, atau orang tuamu. Jawabanmu tidak disimpan atau dikirim ke mana pun.",10,0,2,[90,90,90]);
+var pn=d.getNumberOfPages();for(var p=1;p<=pn;p++){d.setPage(p);d.setFontSize(8.5);d.setTextColor(130,130,130);d.text("Tes Minat dan Orientasi Karier SMK - "+nm,M,291);d.text("Hal. "+p+" / "+pn,210-M-16,291)}
+return d.output("arraybuffer")}
+function txt(){var A=an,t=A.top,L=[],ln="------------------------------------------------------------";
+function P(s){L.push(s)}function B(a){a.forEach(function(s){P("- "+s)});P("")}function Hd(s){P(ln);P(s.toUpperCase());P(ln)}
+var nm=$("nm").value.trim(),tg=new Date().toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
+P("LAPORAN TES MINAT DAN ORIENTASI KARIER");P("Teori minat karier Holland (RIASEC) - siswa SMK Akuntansi");P("");P("Nama    : "+nm);P("Jurusan : Akuntansi");P("Tanggal : "+tg);P("");
+Hd("1. Ringkasan: minatmu apa?");P(A.text);P("Kode minatmu: "+A.code+" ("+t.map(function(o){return LB[o.k]}).join(" - ")+")");P("Rata-rata jawabanmu "+A.m.toFixed(1)+" dari 5.");if(A.tie)P("Catatan: skor peringkat 3 dan 4 sama ("+A.r[2].k+" dan "+A.r[3].k+"). Anggap keduanya sama kuat.");P("");
+Hd("2. Peta minat 6 bidang (skor 8 sampai 40)");A.r.forEach(function(x){P(LB[x.k]+" ("+x.k+"): "+x.s+"/40 - "+x.lv)});P("");
+Hd("3. Aktivitas yang paling kamu suka");B(A.fav.map(function(i){return cap(Q[i][1])+" ("+LB[Q[i][0]]+")"}));
+P("Aktivitas yang kurang menarik bagimu:");B(A.low.length?A.low.map(function(i){return cap(Q[i][1])+" ("+LB[Q[i][0]]+")"}):["Tidak ada aktivitas yang kamu beri nilai rendah."]);
+Hd("4. Tiga minat utamamu");
+t.forEach(function(x,i){var o=D[x.k],g=G[x.k];P((i+1)+". "+LB[x.k]+" ("+x.k+") - "+x.lv);P(o.d);P("Mengapa muncul: "+x.n5+" dari 8 aktivitas di bidang ini kamu beri nilai 5. Skor bidang "+x.s+" dari 40.");P("");
+P("Aktivitas favoritmu di bidang ini:");B(x.id.slice().sort(function(a,b){return ans[b]-ans[a]}).slice(0,3).map(function(j){return cap(Q[j][1])}));
+P("Arah di bidang Akuntansi:");B(g.j);P("Profesi lain yang selaras (di luar akuntansi):");B(o.k);P("Saran kegiatan pengembangan:");B(g.g)});
+var a=t[0].k,b=t[1].k,n=t.filter(function(o){return "CEI".indexOf(o.k)>=0}).length;
+Hd("5. Perpaduan minat utamamu");P("Perpaduan "+LB[a]+" dan "+LB[b]+": kamu cocok pada pekerjaan yang menuntutmu "+KW[a]+", sekaligus "+KW[b]+".");P("");
+Hd("6. Kecocokan dengan bidang Akuntansi");P(n==3?"Sangat selaras: ketiga minat utamamu (C, E, I) adalah pola yang umum pada pekerjaan akuntansi dan keuangan.":n==2?"Selaras: dua dari tiga minat utamamu (C, E, I) adalah pola yang umum pada pekerjaan akuntansi dan keuangan.":n==1?"Sebagian selaras: satu minat utamamu termasuk pola umum akuntansi (C, E, I). Lihat bagian Arah di bidang Akuntansi.":"Minat utamamu di luar pola umum akuntansi (C, E, I). Tidak masalah, lihat bagian Arah di bidang Akuntansi.");P("");
+Hd("7. Rencana langkahmu");B(["Minggu ini: "+G[a].g[0].toLowerCase(),"Bulan ini: "+G[b].g[0].toLowerCase(),"Saat PKL: catat tugas yang membuatmu lupa waktu dan tugas yang membosankan.","Enam bulan lagi: ulangi tes ini dan bandingkan hasilnya."]);
+Hd("Catatan");P("Laporan ini menggambarkan kecenderungan minat berdasarkan jawabanmu hari ini. Ini bukan vonis bakat atau penentu masa depan. Diskusikan dengan guru BK, guru produktif, atau orang tuamu. Jawabanmu tidak disimpan atau dikirim ke mana pun.");
+return L.join("\r\n")}
+$("dt").onclick=async function(){var m=$("msg");m.textContent="Menyiapkan TXT...";
+try{var buf=new TextEncoder().encode(txt()).buffer,dl=(window.claude&&claude.use)?await claude.use("downloads"):null,fn="laporan-minat-"+($("nm").value.trim()||"siswa").replace(/[^A-Za-z0-9 ]/g,"").replace(/ +/g,"-")+".txt";
+if(!dl){var u=URL.createObjectURL(new Blob([buf],{type:"text/plain"})),a=document.createElement("a");a.href=u;a.download=fn;document.body.appendChild(a);a.click();a.remove();m.textContent="Unduhan dimulai. Kalau file tidak muncul, buka halaman ini langsung di browser (bukan di dalam chat), lalu tekan tombol lagi.";return}
+await dl.save({filename:fn,data:buf});m.textContent="Laporan TXT tersimpan."}
+catch(e){m.textContent=e&&e.code==="declined"?"Penyimpanan dibatalkan. Tekan tombol lagi untuk mengulang.":"Gagal: "+((e&&(e.code||e.message))||"tidak diketahui")+". Coba tekan lagi atau muat ulang halaman."}};
 $("dl").onclick=async function(){var m=$("msg");m.textContent="Menyiapkan PDF...";
 try{if(!window.jspdf)throw{code:"lib"};var buf=pdf(),dl=(window.claude&&claude.use)?await claude.use("downloads"):null;
 if(!dl){var u=URL.createObjectURL(new Blob([buf],{type:"application/pdf"})),a=document.createElement("a");a.href=u;a.download="laporan-minat-"+($("nm").value.trim()||"siswa").replace(/[^A-Za-z0-9 ]/g,"").replace(/ +/g,"-")+".pdf";document.body.appendChild(a);a.click();a.remove();m.textContent="Unduhan dimulai. Kalau file tidak muncul, buka halaman ini langsung di browser (bukan di dalam chat), lalu tekan tombol lagi.";return}
 var nm=($("nm").value.trim()||"siswa").replace(/[^A-Za-z0-9 ]/g,"").replace(/ +/g,"-");
 await dl.save({filename:"laporan-minat-"+nm+".pdf",data:buf});m.textContent="Laporan PDF tersimpan."}
-catch(e){m.textContent=e&&e.code==="declined"?"Penyimpanan dibatalkan. Tekan tombol lagi untuk mengulang.":"Gagal membuat PDF: "+((e&&(e.code||e.message))||"pustaka PDF belum tersedia")+". Pastikan koneksi internet aktif saat memuat pustaka PDF, lalu coba lagi."}};
+catch(e){m.textContent=e&&e.code==="declined"?"Penyimpanan dibatalkan. Tekan tombol lagi untuk mengulang.":"Gagal: "+((e&&(e.code||e.message))||"tidak diketahui")+". Coba tekan lagi atau muat ulang halaman."}};
 draw();
 </script>
 </body>
